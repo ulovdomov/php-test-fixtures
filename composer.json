@@ -1,0 +1,69 @@
+{
+  "name": "ulovdomov/php-test-fixtures",
+  "description": "Php Test fixtures",
+  "type": "library",
+  "keywords": [
+    "phpunit",
+    "xunit",
+    "testing"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=8.3",
+    "phpunit/phpunit": "^11.3",
+    "ulovdomov/utils": "^1.0"
+  },
+  "require-dev": {
+    "ulovdomov/php-code-style": "^1.0",
+    "phpstan/phpstan": "^1.11",
+    "phpstan/phpstan-strict-rules": "^1.6",
+    "tracy/tracy": "^2.10",
+    "slim/slim": "^4.14",
+    "nette/di": "^3.2",
+    "dibi/dibi": "^5.0",
+    "symfony/console": "^7.1",
+    "symfony/process": "^7.1",
+    "nette/bootstrap": "^3.2",
+    "nextras/migrations": "^3.3",
+    "laminas/laminas-diactoros": "^3.3"
+  },
+  "suggest": {
+    "ulovdomov/slim": "To use API test cases",
+    "tracy/tracy": "To use better logging and TestCase::dump",
+    "dibi/dibi": "To use database tests"
+  },
+  "scripts": {
+    "install": "composer install --no-interaction --no-progress --prefer-dist",
+    "cs": "mkdir -p temp/.php-codesniffer-cache && vendor/bin/phpcs --standard=phpcs.xml src tests",
+    "cs-fix": "mkdir -p temp/.php-codesniffer-cache && phpcbf --standard=phpcs.xml src tests",
+    "phpstan": "mkdir -p temp/.php-stan-cache && phpstan analyse -c phpstan.neon --memory-limit=1024M",
+    "tests": "phpunit tests --configuration tests/phpunit.xml"
+  },
+  "autoload": {
+    "psr-4": {
+      "UlovDomov\\TestFixtures\\": "src/TestFixtures"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/Tests"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/ulovdomov/php-code-style"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/ulovdomov/php-utils"
+    }
+  ]
+}
