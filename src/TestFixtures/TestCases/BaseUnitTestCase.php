@@ -9,13 +9,13 @@ use UlovDomov\Helpers\Dumper;
 if (\file_exists(__DIR__ . '/../../../vendor/autoload.php')) {
     require_once __DIR__ . '/../../../vendor/autoload.php';
 } else {
-    require_once __DIR__ . '/../../../../../vendor/autoload.php';
+    require_once __DIR__ . '/../../../../../../vendor/autoload.php';
 }
 
 abstract class BaseUnitTestCase extends TestCase
 {
-    private static string $logDir = __DIR__ . '/../../../../../log';
-    private static string $tempDir = __DIR__ . '/../../../../../temp';
+    private static string $logDir = __DIR__ . '/../../../../../../log';
+    private static string $tempDir = __DIR__ . '/../../../../../../temp';
 
     protected function setUp(): void
     {

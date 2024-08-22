@@ -40,7 +40,7 @@ final readonly class TestApiResponse
 
         try {
             /** @var array<mixed>|null $out */
-            $out = \json_decode($contents, flags: \JSON_THROW_ON_ERROR);
+            $out = \json_decode($contents, flags: \JSON_THROW_ON_ERROR | \JSON_OBJECT_AS_ARRAY);
 
             return $out;
         } catch (\JsonException $e) {
