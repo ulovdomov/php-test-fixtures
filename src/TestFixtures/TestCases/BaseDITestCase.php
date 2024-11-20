@@ -7,6 +7,7 @@ use Nette\Bootstrap\Configurator;
 use Nette\DI\Container;
 use Nette\DI\MissingServiceException;
 use PHPUnit\Framework\AssertionFailedError;
+use UlovDomov\TestFixtures\Database\Fixtures\DatabaseFixture;
 
 require_once __DIR__ . '/BaseUnitTestCase.php';
 
@@ -18,6 +19,27 @@ abstract class BaseDITestCase extends BaseUnitTestCase
     {
         parent::tearDown();
         // here destroy sessions and other if needed
+    }
+
+    /**
+     * @template T of DatabaseFixture
+     *
+     * @param class-string<T> $fixturesClass
+     *
+     * @return T
+     */
+    protected function getFixture(string $fixturesClass): DatabaseFixture
+    {
+        try {
+            /** @var T $fixture */
+            $fixture = $this->getService($fixturesClass);
+            $fixture->load();
+
+            return $fixture;
+
+        } catch (MissingServiceException $e) {
+            self::fail($e->getMessage());
+        }
     }
 
     protected function tryEnableTracy(bool $enable = false): void
@@ -91,8 +113,6 @@ abstract class BaseDITestCase extends BaseUnitTestCase
      * @template T of object
      *
      * @param  class-string<T> $type
-     *
-     * @return ($throw is true ? T : ?T)
      *
      * @throws AssertionFailedError
      */

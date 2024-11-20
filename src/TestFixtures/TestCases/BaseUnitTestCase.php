@@ -4,7 +4,7 @@ namespace UlovDomov\TestFixtures\TestCases;
 
 use PHPUnit\Framework\TestCase;
 use Tracy\Debugger;
-use UlovDomov\Helpers\Dumper;
+use UlovDomov\TestFixtures\Dumper;
 
 if (\file_exists(__DIR__ . '/../../../vendor/autoload.php')) {
     require_once __DIR__ . '/../../../vendor/autoload.php';

@@ -8,7 +8,6 @@ use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use Tracy\Debugger;
-use UlovDomov\Http\StatusCode;
 use UlovDomov\TestFixtures\Api\MockServerRequest;
 use UlovDomov\TestFixtures\Api\TestApiResponse;
 
@@ -30,7 +29,7 @@ trait ApiTestTrait
 
     abstract public static function assertTrue(mixed $condition, string $message = ''): void;
 
-    abstract public static function fail(string $message = ''): never;
+    abstract public static function fail(string $message = ''): void;
 
     /**
      * @param array<int|string|mixed> $query
@@ -156,7 +155,7 @@ trait ApiTestTrait
 
     protected static function assertSuccessStatus(TestApiResponse $response): void
     {
-        self::assertSame(StatusCode::Success->value, $response->getStatusCode());
+        self::assertSame(200, $response->getStatusCode());
     }
 
     /**

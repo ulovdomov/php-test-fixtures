@@ -16,6 +16,7 @@ abstract class BaseDIApiTestCase extends BaseDITestCase
      */
     private function getSlimApp(): App
     {
+        /** @phpstan-ignore-next-line */
         return $this->getService(App::class);
     }
 }

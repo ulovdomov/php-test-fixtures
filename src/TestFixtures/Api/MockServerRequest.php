@@ -3,11 +3,10 @@
 namespace UlovDomov\TestFixtures\Api;
 
 use Laminas\Diactoros\ServerRequest;
-use UlovDomov\Exceptions\LogicException;
 
 final class MockServerRequest extends ServerRequest
 {
-    public const string API_TOKEN = 'abc621417e5d7aa7ad9efa828bc6fdef';
+    public const API_TOKEN = 'abc621417e5d7aa7ad9efa828bc6fdef';
 
     /**
      * @param array<int|string> $headers
@@ -21,7 +20,7 @@ final class MockServerRequest extends ServerRequest
         $stream = \fopen('data://text/plain;base64,' . \base64_encode($body ?? ''), 'r');
 
         if ($stream === false) {
-            throw new LogicException('Resource can not be created');
+            throw new \LogicException('Resource can not be created');
         }
 
         parent::__construct(

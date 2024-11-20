@@ -9,9 +9,9 @@
   ],
   "license": "MIT",
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.0",
     "phpunit/phpunit": "^11.3",
-    "ulovdomov/utils": "^1.0"
+    "nettrine/orm": "^0.8.4"
   },
   "require-dev": {
     "ulovdomov/php-code-style": "^1.0",
@@ -19,18 +19,24 @@
     "phpstan/phpstan-strict-rules": "^1.6",
     "tracy/tracy": "^2.10",
     "slim/slim": "^4.14",
-    "nette/di": "^3.2",
+    "nette/di": ">=2.4.9",
     "dibi/dibi": "^5.0",
-    "symfony/console": "^7.1",
+    "symfony/console": ">= 3.3.6",
     "symfony/process": "^7.1",
     "nette/bootstrap": "^3.2",
     "nextras/migrations": "^3.3",
-    "laminas/laminas-diactoros": "^3.3"
+    "laminas/laminas-diactoros": "^3.3",
+    "nettrine/dbal": "^0.8.2",
+    "nettrine/migrations": "^0.9.1"
   },
   "suggest": {
+    "nette/bootstrap": "To use DI test case",
     "ulovdomov/slim": "To use API test cases",
-    "tracy/tracy": "To use better logging and TestCase::dump",
-    "dibi/dibi": "To use database tests"
+    "nextras/migrations": "To use nextras migrations",
+    "nettrine/migrations": "To use Doctrine migrations",
+    "nettrine/dbal": "To use Doctrine database layer",
+    "dibi/dibi": "To use DIBI database layer",
+    "tracy/tracy": "To use better logging"
   },
   "scripts": {
     "install": "composer install --no-interaction --no-progress --prefer-dist",
@@ -60,10 +66,6 @@
     {
       "type": "vcs",
       "url": "https://github.com/ulovdomov/php-code-style"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/ulovdomov/php-utils"
     }
   ]
 }

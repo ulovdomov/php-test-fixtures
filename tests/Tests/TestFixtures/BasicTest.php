@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Package;
+namespace Tests\TestFixtures;
 
 use UlovDomov\TestFixtures\TestCases\BaseUnitTestCase;
 
@@ -16,7 +16,6 @@ final class BasicTest extends BaseUnitTestCase
 
     public function testBasic(): void
     {
-        //todo: implement own logic
         self::assertTrue(true);
     }
 }

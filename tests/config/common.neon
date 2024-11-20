@@ -1,0 +1,2 @@
+services:
+	- Tests\Libraries\TestService

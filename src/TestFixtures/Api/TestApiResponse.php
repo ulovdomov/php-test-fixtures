@@ -5,9 +5,8 @@ namespace UlovDomov\TestFixtures\Api;
 use Nette\Utils\Strings;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
-use UlovDomov\Exceptions\LogicException;
 
-final readonly class TestApiResponse
+final class TestApiResponse
 {
     public function __construct(private ResponseInterface $response)
     {
@@ -55,7 +54,7 @@ final readonly class TestApiResponse
 
             return $this->response->getBody()->getContents();
         } catch (\RuntimeException $e) {
-            throw LogicException::createFromPrevious($e);
+            throw new \LogicException($e->getMessage(), $e->getCode(), $e);
         }
     }
 }
