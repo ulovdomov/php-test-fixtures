@@ -10,6 +10,7 @@ final class DatabaseDumpProcessor
 {
     private function __construct()
     {
+        // static class
     }
 
     public static function dumpDatabase(DatabaseLayer $databaseLayer): void
