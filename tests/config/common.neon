@@ -1,11 +1,11 @@
 parameters:
     pgDb:
-        host: 'host.docker.internal'
+        host: 'postgres'
         user: 'ci_user'
         password: 'ci_password'
         database: 'ci_db'
     mariaDb:
-        host: 'host.docker.internal'
+        host: 'mysql'
         user: 'root'
         password: 'root'
         database: 'ci_db'
