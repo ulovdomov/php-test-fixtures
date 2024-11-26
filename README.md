@@ -86,7 +86,7 @@ final class TestUserDibiFixture extends DibiDatabaseFixture
     
     public function load(): void
     {
-        $this->user = new TestDibiUser(1, 'Tester');
+        $this->user = new TestDibiUser('Tester');
     }
 
     public function persist(Connection $connection): void
@@ -152,7 +152,7 @@ protected function getService(string $type, bool $throw = true): object|null
 
 ### `BaseDatabaseTestCase`
 
-- **!!! For proper functionality, the `mysql-client` package must be installed for MySQL, and `postgresql-client` for PostgreSQL.**
+- **!!! For proper functionality, the `mysql-client` (`mariadb-client`) package must be installed for MySQL, and `postgresql-client` for PostgreSQL.**
 - To use the `BaseDatabaseTestCase`, you need to register `UlovDomov\TestFixtures\DI\TestExtrasExtension` in the DI container and configure migrations, the database layer, and the database type.
 
 ```neon

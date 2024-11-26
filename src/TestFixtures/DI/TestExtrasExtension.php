@@ -50,7 +50,7 @@ final class TestExtrasExtension extends CompilerExtension
         ])->castTo('array');
     }
 
-    public function loadConfiguration(): void
+    public function beforeCompile(): void
     {
         $container = $this->getContainerBuilder();
         /** @var array<string> $config */

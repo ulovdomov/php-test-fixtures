@@ -10,7 +10,7 @@ final class DatabaseLayerFactory
     /**
      * @param class-string<DatabaseLayer> $databaseLayerClass
      */
-    private function __construct(private string $databaseLayerClass, private Container $container)
+    public function __construct(private string $databaseLayerClass, private Container $container)
     {
     }
 

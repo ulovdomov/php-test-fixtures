@@ -1,0 +1,10 @@
+tests:
+    migrations: 'nextras'
+    database: 'pgsql'
+    databaseLayer: 'dibi'
+
+extensions:
+    tests: UlovDomov\TestFixtures\DI\TestExtrasExtension
+
+services:
+    - Tests\Libraries\TestUserDibiFixture

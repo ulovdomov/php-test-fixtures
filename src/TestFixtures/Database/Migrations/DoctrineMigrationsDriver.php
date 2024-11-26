@@ -16,7 +16,7 @@ final class DoctrineMigrationsDriver implements MigrationsDriver
     public function runMigrations(Container $container): void
     {
         /** @var MigrateCommand $migrateCommand */
-        $migrateCommand = $container->getByType(MigrateCommand::class);
+        $migrateCommand = $container->getService('nettrine.migrations.migrateCommand');
         \ob_start();
         $migrateCommand->run(new ArrayInput([]), new NullOutput());
         \ob_end_clean();

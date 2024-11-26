@@ -10,8 +10,7 @@
   "license": "MIT",
   "require": {
     "php": ">=8.0",
-    "phpunit/phpunit": "^11.3",
-    "nettrine/orm": "^0.8.4"
+    "phpunit/phpunit": ">=8.5"
   },
   "require-dev": {
     "ulovdomov/php-code-style": "^1.0",
@@ -27,7 +26,9 @@
     "nextras/migrations": "^3.3",
     "laminas/laminas-diactoros": "^3.3",
     "nettrine/dbal": "^0.8.2",
-    "nettrine/migrations": "^0.9.1"
+    "nettrine/migrations": "^0.9.1",
+    "nettrine/orm": "^0.8.4",
+    "nettrine/cache": "^0.3.0"
   },
   "suggest": {
     "nette/bootstrap": "To use DI test case",

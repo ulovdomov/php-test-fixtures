@@ -17,7 +17,7 @@ final class TestBootstrap
         $configurator->addConfig(__DIR__ . '/../../config/common.neon');
 
         $configurator->addStaticParameters([
-            'rootDir' => __DIR__ . '/..',
+            'rootDir' => __DIR__ . '/../..',
             'logDir' => __DIR__ . '/../../../log',
         ]);
 

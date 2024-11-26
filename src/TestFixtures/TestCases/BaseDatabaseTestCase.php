@@ -15,8 +15,6 @@ require_once __DIR__ . '/BaseDITestCase.php';
 
 abstract class BaseDatabaseTestCase extends BaseDITestCase
 {
-    private const DATABASE_CACHE_FILE = '/database-dummy.sql';
-
     private DatabaseLayer|null $databaseLayer = null;
 
     /**
@@ -61,7 +59,7 @@ abstract class BaseDatabaseTestCase extends BaseDITestCase
             });
 
         } catch (MissingServiceException | \Throwable $e) {
-            self::fail($e->getMessage());
+            throw new \LogicException($e->getMessage(), 0, $e);
         }
     }
 
@@ -72,13 +70,13 @@ abstract class BaseDatabaseTestCase extends BaseDITestCase
     {
         $load = true;
 
-        if (self::isMigrationCacheNeedCreate()) {
-            self::lock('database-cache');
+        if ($this->isMigrationCacheNeedCreate($container)) {
+            self::lock($this->getDatabaseLayer($container)->getCacheFile());
 
             /** @phpstan-ignore-next-line */
-            if (self::isMigrationCacheNeedCreate()) {
-                if (self::isMigrationCacheExists()) {
-                    self::fail('Migration cache already exists');
+            if ($this->isMigrationCacheNeedCreate($container)) {
+                if ($this->isMigrationCacheExists($container)) {
+                    $this->removeMigrationCacheExists($container);
                 }
 
                 $load = false;
@@ -117,15 +115,29 @@ abstract class BaseDatabaseTestCase extends BaseDITestCase
         return $container->getByType(MigrationsDriver::class);
     }
 
-    private static function isMigrationCacheNeedCreate(): bool
+    /**
+     * @throws MissingServiceException
+     */
+    private function isMigrationCacheNeedCreate(Container $container): bool
     {
-        return !self::isMigrationCacheExists() ||
-            !\str_starts_with(self::getLastLineFromFile(self::getDatabaseCacheFile()), '-- Dump completed');
+        return !$this->isMigrationCacheExists($container) ||
+            !\str_starts_with(self::getLastLineFromFile($this->getDatabaseCacheFile($container)), '-- Dump completed');
     }
 
-    private static function isMigrationCacheExists(): bool
+    /**
+     * @throws MissingServiceException
+     */
+    private function isMigrationCacheExists(Container $container): bool
     {
-        return \file_exists(self::getDatabaseCacheFile());
+        return \file_exists($this->getDatabaseCacheFile($container));
+    }
+
+    /**
+     * @throws MissingServiceException
+     */
+    private function removeMigrationCacheExists(Container $container): void
+    {
+        \unlink($this->getDatabaseCacheFile($container));
     }
 
     private static function getLastLineFromFile(string $path): string
@@ -158,8 +170,11 @@ abstract class BaseDatabaseTestCase extends BaseDITestCase
         return $line;
     }
 
-    private static function getDatabaseCacheFile(): string
+    /**
+     * @throws MissingServiceException
+     */
+    private function getDatabaseCacheFile(Container $container): string
     {
-        return self::getTempDir() . self::DATABASE_CACHE_FILE;
+        return self::getTempDir() . $this->getDatabaseLayer($container)->getCacheFile();
     }
 }

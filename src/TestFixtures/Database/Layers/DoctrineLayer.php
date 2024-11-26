@@ -21,6 +21,11 @@ final class DoctrineLayer implements DatabaseLayer
         return $this->databaseName;
     }
 
+    public function getCacheFile(): string
+    {
+        return $this->driver->getCacheFile();
+    }
+
     /**
      * @return array<string, string>
      */
@@ -66,13 +71,8 @@ final class DoctrineLayer implements DatabaseLayer
         $this->connection->executeQuery($this->driver->dropDatabase($this->databaseName));
     }
 
-    public function getExportCommand(): string
+    public function getDriver(): DatabaseDriver
     {
-        return 'mysql-export.sh';
-    }
-
-    public function getImportCommand(): string
-    {
-        return 'mysql-export.sh';
+        return $this->driver;
     }
 }

@@ -43,20 +43,21 @@ abstract class BaseUnitTestCase extends TestCase
             $fp = \fopen($file, 'w');
 
             if ($fp === false) {
-                self::fail('Can not create lock');
+                self::fail(\sprintf('Can not create lock %s', $file));
             }
 
             \flock($locks[$file] = $fp, \LOCK_EX);
 
-            /*\register_shutdown_function(function () use ($fp, $file) {
+            \register_shutdown_function(static function () use ($fp, $file): void {
+                /** @phpstan-ignore-next-line */
                 if ($fp) {
-                    fclose($fp);
+                    \fclose($fp);
                 }
 
-                if (file_exists($file)) {
-                    FileSystem::delete($file);
+                if (\file_exists($file)) {
+                    \unlink($file);
                 }
-            });*/
+            });
         }
     }
 

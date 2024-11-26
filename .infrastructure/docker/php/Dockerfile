@@ -21,7 +21,7 @@ RUN apk --update --no-cache add \
   && sed -i 's/$this-_/$this->_/g' /usr/local/lib/php/OS/Guess.php \
   && docker-php-ext-enable opcache \
   && docker-php-ext-configure intl \
-  && docker-php-ext-install -j "$(nproc)" bcmath bz2 mysqli pdo_mysql zip intl \
+  && docker-php-ext-install -j "$(nproc)" bcmath bz2 mysqli pdo_mysql pgsql pdo_pgsql zip intl \
   && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY .infrastructure/docker/php/php.ini /usr/local/etc/php/conf.d/custom_php.ini

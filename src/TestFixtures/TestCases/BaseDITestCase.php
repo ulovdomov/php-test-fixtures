@@ -36,7 +36,6 @@ abstract class BaseDITestCase extends BaseUnitTestCase
             $fixture->load();
 
             return $fixture;
-
         } catch (MissingServiceException $e) {
             self::fail($e->getMessage());
         }

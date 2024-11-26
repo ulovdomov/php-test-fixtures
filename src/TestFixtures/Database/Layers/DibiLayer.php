@@ -10,7 +10,7 @@ final class DibiLayer implements DatabaseLayer
 {
     public function __construct(
         private string $databaseName,
-        private DatabaseDriver $databaseDriver,
+        private DatabaseDriver $driver,
         private Connection $connection,
     )
     {
@@ -19,6 +19,11 @@ final class DibiLayer implements DatabaseLayer
     public function getDatabaseName(): string
     {
         return $this->databaseName;
+    }
+
+    public function getCacheFile(): string
+    {
+        return $this->driver->getCacheFile();
     }
 
     /**
@@ -41,10 +46,10 @@ final class DibiLayer implements DatabaseLayer
      */
     public function createAndUseDatabase(): void
     {
-        $this->connection->query($this->databaseDriver->dropDatabase($this->databaseName));
-        $this->connection->query($this->databaseDriver->createDatabase($this->databaseName));
+        $this->connection->query($this->driver->dropDatabase($this->databaseName));
+        $this->connection->query($this->driver->createDatabase($this->databaseName));
 
-        $useDatabase = $this->databaseDriver->useDatabase($this->databaseName);
+        $useDatabase = $this->driver->useDatabase($this->databaseName);
 
         if ($useDatabase !== null) {
             $this->connection->query($useDatabase);
@@ -59,16 +64,11 @@ final class DibiLayer implements DatabaseLayer
      */
     public function dropDatabase(): void
     {
-        $this->connection->query($this->databaseDriver->dropDatabase($this->databaseName));
+        $this->connection->query($this->driver->dropDatabase($this->databaseName));
     }
 
-    public function getExportCommand(): string
+    public function getDriver(): DatabaseDriver
     {
-        return 'pgsql-export.sh';
-    }
-
-    public function getImportCommand(): string
-    {
-        return 'pgsql-export.sh';
+        return $this->driver;
     }
 }

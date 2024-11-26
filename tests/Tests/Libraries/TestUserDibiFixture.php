@@ -3,6 +3,7 @@
 namespace Tests\Libraries;
 
 use Dibi\Connection;
+use Dibi\Exception;
 use UlovDomov\TestFixtures\Database\Fixtures\DibiDatabaseFixture;
 
 final class TestUserDibiFixture extends DibiDatabaseFixture
@@ -11,11 +12,16 @@ final class TestUserDibiFixture extends DibiDatabaseFixture
 
     public function load(): void
     {
-        $this->user = new TestDibiUser(1, 'Tester');
+        $this->user = new TestDibiUser(1, 'John'); // id is here only for testing purposes
     }
 
+    /**
+     * @throws Exception
+     */
     public function persist(Connection $connection): void
     {
-        $connection->insert('test_user', $this->user->toArray());
+        $data = $this->user->toArray();
+        unset($data['id']);
+        $connection->query('INSERT INTO users', $data);
     }
 }

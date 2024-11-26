@@ -15,7 +15,7 @@ final class DatabaseDumpProcessor
     public static function dumpDatabase(DatabaseLayer $databaseLayer): void
     {
         try {
-            $process = self::createProcess($databaseLayer->getImportCommand(), $databaseLayer);
+            $process = self::createProcess($databaseLayer->getDriver()->getExportCommand(), $databaseLayer);
             $process->run();
 
             if (!$process->isSuccessful()) {
@@ -30,7 +30,7 @@ final class DatabaseDumpProcessor
     public static function importDatabase(DatabaseLayer $databaseLayer): void
     {
         try {
-            $process = self::createProcess($databaseLayer->getImportCommand(), $databaseLayer);
+            $process = self::createProcess($databaseLayer->getDriver()->getImportCommand(), $databaseLayer);
             $process->setTimeout(120);
             $process->run();
 

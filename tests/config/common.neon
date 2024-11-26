@@ -1,2 +1,57 @@
+parameters:
+    pgDb:
+        host: 'host.docker.internal'
+        user: 'ci_user'
+        password: 'ci_password'
+        database: 'ci_db'
+    mariaDb:
+        host: 'host.docker.internal'
+        user: 'root'
+        password: 'root'
+        database: 'ci_db'
+
+dibi:
+    driver: 'postgre'
+    host: %pgDb.host%
+    username: %pgDb.user%
+    password: %pgDb.password%
+    database: %pgDb.database%
+    lazy: true
+
+migrations:
+    dir: %rootDir%/migrations
+    driver: 'pgsql'
+    dbal: 'dibi'
+    withDummyData: %debugMode%
+
+nettrine.dbal:
+    connection:
+        host: %mariaDb.host%
+        driver: pdo_mysql
+        dbname: %mariaDb.database%
+        user: %mariaDb.user%
+        password: %mariaDb.password%
+        charset: utf8
+
+nettrine.migrations:
+    directory: %rootDir%/doctrine
+    versionsOrganization: year_and_month
+    namespace: TestDatabase\Migrations
+
+nettrine.orm.attributes:
+    mapping: [
+        Tests\Libraries: %rootDir%/Tests/Libraries
+    ]
+
 services:
-	- Tests\Libraries\TestService
+    - Tests\Libraries\TestService
+
+extensions:
+    dibi: Dibi\Bridges\Nette\DibiExtension22
+    migrations: Nextras\Migrations\Bridges\NetteDI\MigrationsExtension
+    nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+    nettrine.migrations: Nettrine\Migrations\DI\MigrationsExtension
+    nettrine.orm: Nettrine\ORM\DI\OrmExtension
+    nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
+    nettrine.orm.attributes: Nettrine\ORM\DI\OrmAttributesExtension
+    nettrine.cache: Nettrine\Cache\DI\CacheExtension

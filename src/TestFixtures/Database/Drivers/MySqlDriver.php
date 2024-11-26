@@ -18,4 +18,19 @@ final class MySqlDriver implements DatabaseDriver
     {
         return 'USE `' . $databaseName . '`';
     }
+
+    public function getExportCommand(): string
+    {
+        return 'mysql-export.sh';
+    }
+
+    public function getImportCommand(): string
+    {
+        return 'mysql-import.sh';
+    }
+
+    public function getCacheFile(): string
+    {
+        return '/database-mysql.sql';
+    }
 }
