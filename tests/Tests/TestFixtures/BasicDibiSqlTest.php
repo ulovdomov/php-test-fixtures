@@ -53,7 +53,8 @@ final class BasicDibiSqlTest extends BaseDatabaseTestCase
     protected function createContainer(array $configs = []): Container
     {
         $configs[] = __DIR__ . '/../../config/dibi.neon';
-        if (file_exists(__DIR__ . '/../../config/local.neon')) {
+
+        if (\file_exists(__DIR__ . '/../../config/local.neon')) {
             $configs[] = __DIR__ . '/../../config/local.neon';
         }
 

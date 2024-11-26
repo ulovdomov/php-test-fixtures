@@ -63,7 +63,8 @@ final class BasicDoctrineTest extends BaseDatabaseTestCase
     protected function createContainer(array $configs = []): Container
     {
         $configs[] = __DIR__ . '/../../config/doctrine.neon';
-        if (file_exists(__DIR__ . '/../../config/local.neon')) {
+
+        if (\file_exists(__DIR__ . '/../../config/local.neon')) {
             $configs[] = __DIR__ . '/../../config/local.neon';
         }
 
