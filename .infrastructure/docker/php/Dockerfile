@@ -17,6 +17,8 @@ RUN apk --update --no-cache add \
   icu-dev \
   git \
   openssh-client \
+  mariadb-client \
+  postgresql-client \
   # bugfix
   && sed -i 's/$this-_/$this->_/g' /usr/local/lib/php/OS/Guess.php \
   && docker-php-ext-enable opcache \
