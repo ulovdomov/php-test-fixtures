@@ -4,7 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - COMPOSER_TOKEN=${COMPOSER_TOKEN}
         - COMPOSER_HOME=/var/www/html/.composer
     env_file: .env
     environment:
@@ -13,9 +12,6 @@ services:
       - ./:/var/www/html
     networks:
       - php-test-fixtures
-    command: >
-      sh -c "mkdir -p .composer &&
-             echo '{\"github-oauth\": {\"github.com\": \"${COMPOSER_TOKEN}\"}}' > .composer/auth.json && php-fpm"
 
   testFixturesAdminer:
     image: adminer:latest
