@@ -4,13 +4,58 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - COMPOSER_TOKEN=${COMPOSER_TOKEN}
         - COMPOSER_HOME=/var/www/html/.composer
     env_file: .env
     environment:
       COMPOSER_HOME: /var/www/html/.composer
     volumes:
       - ./:/var/www/html
-    command: >
-      sh -c "mkdir -p .composer &&
-             echo '{\"github-oauth\": {\"github.com\": \"${COMPOSER_TOKEN}\"}}' > .composer/auth.json && php-fpm"
+    networks:
+      - php-test-fixtures
+
+  testFixturesAdminer:
+    image: adminer:latest
+    container_name: testAdminer
+    restart: always
+    environment:
+      ADMINER_DESIGN: nette
+    networks:
+      - php-test-fixtures
+    depends_on:
+      - testFixturesPgDb
+      - testFixturesMariaDb
+    ports:
+      - "5119:8080"
+
+  testFixturesPgDb:
+    image: postgres:15.10
+    container_name: testPgDb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test-fixtures
+    networks:
+      - php-test-fixtures
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  testFixturesMariaDb:
+    image: mariadb:latest
+    container_name: testMariaDb
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: test-fixtures
+      MARIADB_USER: maria
+      MARIADB_PASSWORD: password
+    networks:
+      - php-test-fixtures
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+volumes:
+  postgres_data:
+  mariadb_data:
+
+networks:
+  php-test-fixtures:
+    driver: bridge

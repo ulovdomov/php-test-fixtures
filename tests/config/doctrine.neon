@@ -1,0 +1,7 @@
+tests:
+    migrations: 'doctrine'
+    database: 'mysql'
+    databaseLayer: 'doctrine'
+
+extensions:
+    tests: UlovDomov\TestFixtures\DI\TestExtrasExtension

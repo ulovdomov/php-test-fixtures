@@ -2,42 +2,34 @@
 
 namespace UlovDomov\TestFixtures\TestCases;
 
-use Dibi\Connection;
-use Dibi\Exception;
 use Nette\DI\Container;
 use Nette\DI\MissingServiceException;
-use Nextras\Migrations\Bridges\SymfonyConsole\ResetCommand;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Process\Process;
 use Tracy\Debugger;
-use UlovDomov\Exceptions\LogicException;
+use UlovDomov\TestFixtures\Database\DatabaseDumpProcessor;
+use UlovDomov\TestFixtures\Database\DatabaseLayerFactory;
+use UlovDomov\TestFixtures\Database\Fixtures\DatabaseFixture;
+use UlovDomov\TestFixtures\Database\Layers\DatabaseLayer;
+use UlovDomov\TestFixtures\Database\Migrations\MigrationsDriver;
 
 require_once __DIR__ . '/BaseDITestCase.php';
 
 abstract class BaseDatabaseTestCase extends BaseDITestCase
 {
-    private const string DATABASE_CACHE_FILE = '/database-dummy.sql';
+    private DatabaseLayer|null $databaseLayer = null;
 
-    private string $databaseName;
-
-    protected function refreshConnection(Container $container): Connection
+    /**
+     * @template T of DatabaseFixture
+     *
+     * @param class-string<T> $fixturesClass
+     *
+     * @return T
+     */
+    protected function getFixture(string $fixturesClass): DatabaseFixture
     {
-        try {
-            // @var Connection $oldConnection */
-            $connection = $container->getByType(Connection::class);
-            $this->createDatabase($connection);
-            $connection->__construct(
-                ['database' => $this->databaseName] + $connection->getConfig(),
-            );
-            $connection->disconnect();
+        $fixture = parent::getFixture($fixturesClass);
+        $fixture->save($this->getContainer());
 
-            $this->doSetupDatabase($connection, $container);
-
-            return $connection;
-        } catch (MissingServiceException | Exception $e) {
-            self::fail($e->getMessage());
-        }
+        return $fixture;
     }
 
     protected function createContainer(array $configs = []): Container
@@ -45,112 +37,107 @@ abstract class BaseDatabaseTestCase extends BaseDITestCase
         $container = parent::createContainer($configs);
 
         try {
-            $this->refreshConnection($container);
+            $this->initializeConnection($container);
 
         } catch (\Throwable $e) {
             Debugger::log($e, Debugger::EXCEPTION);
-            throw LogicException::createFromPrevious($e);
+            throw new \LogicException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $container;
     }
 
-    protected function doSetupDatabase(Connection $connection, Container $container): void
+    protected function initializeConnection(Container $container): void
     {
         try {
-            $this->importDatabase($connection, $container);
+            $this->getDatabaseLayer($container)->createAndUseDatabase();
 
-            \register_shutdown_function(function () use ($connection): void {
-                $connection->query('DROP DATABASE IF EXISTS `' . $this->databaseName . '`');
+            $this->importDatabase($container);
+
+            \register_shutdown_function(function () use ($container): void {
+                $this->getDatabaseLayer($container)->dropDatabase();
             });
 
-        } catch (Exception $e) {
-            throw LogicException::createFromPrevious($e);
+        } catch (MissingServiceException | \Throwable $e) {
+            throw new \LogicException($e->getMessage(), 0, $e);
         }
     }
 
-    private function createDatabase(Connection $connection): void
-    {
-        $this->databaseName = 'tf_test_' . \getmypid();
-
-        try {
-            $connection->query('DROP DATABASE IF EXISTS `' . $this->databaseName . '`');
-            $connection->query(
-                'CREATE DATABASE `' . $this->databaseName . '` ENCODING "UTF8" LC_COLLATE = "en_US.utf8" LC_CTYPE = "en_US.utf8"',
-            );
-        } catch (Exception $e) {
-            Debugger::log($e, Debugger::EXCEPTION);
-            self::fail('Error during database create: ' . $e->getMessage());
-        }
-    }
-
-    private function importDatabase(Connection $connection, Container $container): void
+    /**
+     * @throws MissingServiceException
+     */
+    private function importDatabase(Container $container): void
     {
         $load = true;
 
-        if (self::isMigrationCacheNeedCreate()) {
-            self::lock('database-cache');
+        if ($this->isMigrationCacheNeedCreate($container)) {
+            self::lock($this->getDatabaseLayer($container)->getCacheFile());
 
-            if (self::isMigrationCacheNeedCreate()) {
-                if (self::isMigrationCacheExists()) {
-                    self::fail('Migration cache already exists');
+            /** @phpstan-ignore-next-line */
+            if ($this->isMigrationCacheNeedCreate($container)) {
+                if ($this->isMigrationCacheExists($container)) {
+                    $this->removeMigrationCacheExists($container);
                 }
 
                 $load = false;
-                self::runMigrationsReset($container);
 
-                try {
-                    $process = $this->createProcess('db-export.sh', $connection);
-                    $process->run();
+                $this->getMigrationsDriver($container)->runMigrations($container);
 
-                    if (!$process->isSuccessful()) {
-                        Debugger::log($process->getOutput() . $process->getErrorOutput(), Debugger::WARNING);
-                        self::fail('Problem with generating cache for database migrations in tests');
-                    }
-                } catch (\Throwable $e) {
-                    throw LogicException::createFromPrevious($e);
-                }
+                DatabaseDumpProcessor::dumpDatabase($this->getDatabaseLayer($container));
             }
         }
 
         if ($load) {
-            $process = $this->createProcess('db-import.sh', $connection);
-            try {
-                $process->setTimeout(120);
-                $process->run();
-
-                if (!$process->isSuccessful()) {
-                    Debugger::log($process->getOutput() . $process->getErrorOutput(), Debugger::WARNING);
-                    self::fail('Problem with importing cache with database migrations in tests');
-                }
-            } catch (\Throwable $e) {
-                throw LogicException::createFromPrevious($e);
-            }
+            DatabaseDumpProcessor::importDatabase($this->getDatabaseLayer($container));
         }
     }
 
-    private static function runMigrationsReset(Container $container): void
+    /**
+     * @throws MissingServiceException
+     */
+    private function getDatabaseLayer(Container $container): DatabaseLayer
     {
-        try {
-            /** @var ResetCommand $resetCommand */
-            $resetCommand = $container->getByType(ResetCommand::class);
-            \ob_start();
-            $resetCommand->run(new ArrayInput([]), new NullOutput());
-            \ob_end_clean();
-        } catch (MissingServiceException $e) {
-            self::fail($e->getMessage());
+        if ($this->databaseLayer === null) {
+            /** @var DatabaseLayerFactory $factory */
+            $factory = $container->getByType(DatabaseLayerFactory::class);
+            $this->databaseLayer = $factory->create('tf_test_' . \getmypid());
+
         }
+
+        return $this->databaseLayer;
     }
 
-    private static function isMigrationCacheNeedCreate(): bool
+    /**
+     * @throws MissingServiceException
+     */
+    private function getMigrationsDriver(Container $container): MigrationsDriver
     {
-        return !self::isMigrationCacheExists() ||
-            !\str_starts_with(self::getLastLineFromFile(self::getDatabaseCacheFile()), '-- Dump completed');
+        return $container->getByType(MigrationsDriver::class);
     }
 
-    private static function isMigrationCacheExists(): bool
+    /**
+     * @throws MissingServiceException
+     */
+    private function isMigrationCacheNeedCreate(Container $container): bool
     {
-        return \file_exists(self::getDatabaseCacheFile());
+        return !$this->isMigrationCacheExists($container) ||
+            !\str_starts_with(self::getLastLineFromFile($this->getDatabaseCacheFile($container)), '-- Dump completed');
+    }
+
+    /**
+     * @throws MissingServiceException
+     */
+    private function isMigrationCacheExists(Container $container): bool
+    {
+        return \file_exists($this->getDatabaseCacheFile($container));
+    }
+
+    /**
+     * @throws MissingServiceException
+     */
+    private function removeMigrationCacheExists(Container $container): void
+    {
+        \unlink($this->getDatabaseCacheFile($container));
     }
 
     private static function getLastLineFromFile(string $path): string
@@ -183,19 +170,11 @@ abstract class BaseDatabaseTestCase extends BaseDITestCase
         return $line;
     }
 
-    private static function getDatabaseCacheFile(): string
+    /**
+     * @throws MissingServiceException
+     */
+    private function getDatabaseCacheFile(Container $container): string
     {
-        return self::getTempDir() . self::DATABASE_CACHE_FILE;
-    }
-
-    private function createProcess(string $command, Connection $connection): Process
-    {
-        /** @var array<string> $config */
-        $config = $connection->getConfig();
-
-        return new Process(
-            ['sh', __DIR__ . '/../../bin/' . $command, $config['password'], $config['host'], $config['username'], $this->databaseName],
-            __DIR__ . '/../../',
-        );
+        return self::getTempDir() . $this->getDatabaseLayer($container)->getCacheFile();
     }
 }

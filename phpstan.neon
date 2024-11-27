@@ -13,7 +13,7 @@ parameters:
 #    doctrine:
 #        objectManagerLoader: .infrastructure/PHPStan/object-manager.php
     excludePaths:
-        - src/HttpClient/Utils/*
+        - src/TestFixtures/Dumper.php
     exceptions:
         check:
             missingCheckedExceptionInThrows: true
@@ -25,4 +25,3 @@ parameters:
             - 'Exception'
     ignoreErrors:
         - '#Call to static method boot\(\) on an unknown class App\\Bootstrap\.#'
-        - '#If condition is always true\.#'

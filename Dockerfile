@@ -3,11 +3,11 @@ FROM php:8.3-fpm
 ARG COMPOSER_TOKEN
 
 RUN apt-get update -y
-RUN apt-get install nano vim git zip libicu-dev -y
+RUN apt-get install nano vim git zip libicu-dev libpq-dev mariadb-client postgresql-client -y
 RUN apt-get upgrade -y
 
-#RUN docker-php-ext-configure intl
-#RUN docker-php-ext-install intl
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install -j "$(nproc)" mysqli pdo_mysql pgsql pdo_pgsql intl
 
 RUN mkdir -p src temp log
 

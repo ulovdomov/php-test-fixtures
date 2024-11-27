@@ -1,0 +1,11 @@
+parameters:
+    pgDb:
+        host: 'testPgDb'
+        user: 'postgres'
+        password: 'password'
+        database: 'test-fixtures'
+    mariaDb:
+        host: 'testMariaDb'
+        user: 'root'
+        password: 'password'
+        database: 'test-fixtures'
