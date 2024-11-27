@@ -22,7 +22,9 @@ final class DatabaseDumpProcessor
             if (!$process->isSuccessful()) {
                 $message = $process->getOutput() . $process->getErrorOutput();
                 Debugger::log($message, Debugger::WARNING);
-                throw new \LogicException('Problem with generating cache for database migrations in tests: ' . $message);
+                throw new \LogicException(
+                    'Problem with generating cache for database migrations in tests: ' . $message,
+                );
             }
         } catch (\Throwable $e) {
             throw new \LogicException($e->getMessage(), $e->getCode(), $e);
@@ -39,7 +41,9 @@ final class DatabaseDumpProcessor
             if (!$process->isSuccessful()) {
                 $message = $process->getOutput() . $process->getErrorOutput();
                 Debugger::log($message, Debugger::WARNING);
-                throw new \LogicException('Problem with importing cache with database migrations in tests: ' . $message);
+                throw new \LogicException(
+                    'Problem with importing cache with database migrations in tests: ' . $message,
+                );
             }
         } catch (\Throwable $e) {
             throw new \LogicException($e->getMessage(), $e->getCode(), $e);
