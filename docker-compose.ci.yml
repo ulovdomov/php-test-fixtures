@@ -9,6 +9,9 @@ services:
     env_file: .env
     networks:
       - ci_network
+    depends_on:
+      - mysql
+      - postgres
     environment:
       COMPOSER_HOME: /var/www/html/.composer
 
