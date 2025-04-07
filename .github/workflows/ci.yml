@@ -27,6 +27,34 @@ jobs:
     name: "Tests"
     runs-on: "${{ matrix.operating-system }}"
 
+    services:
+      postgres:
+        image: postgres:15.10
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: ci_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U ci_user"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      mysql:
+        image: mariadb:latest
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: ci_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     if: |
       github.event_name != 'pull_request'
       || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
