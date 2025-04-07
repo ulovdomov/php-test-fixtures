@@ -63,6 +63,26 @@ jobs:
         php-version: ["8.1", "8.2", "8.3", "8.4"]
 
     steps:
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..30}; do
+            pg_isready -h postgres -U ci_user && echo "PostgreSQL is ready" && exit 0
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time" >&2
+          exit 1
+
+      - name: Wait for MariaDB
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h mariadb -uroot --silent && echo "MariaDB is ready" && exit 0
+            echo "Waiting for MariaDB..."
+            sleep 2
+          done
+          echo "MariaDB did not become ready in time" >&2
+          exit 1
+
       - name: Check DNS for containers
         run: |
           getent hosts mariadb
