@@ -10,7 +10,7 @@ use Nette\DI\MissingServiceException;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Tests\Libraries\TestBootstrap;
 use Tests\Libraries\TestUser;
-use UlovDomov\TestFixtures\TestCases\BaseDatabaseTestCase;
+use UlovDomov\TestExtras\TestCases\BaseDatabaseTestCase;
 
 final class BasicDoctrineTest extends BaseDatabaseTestCase
 {

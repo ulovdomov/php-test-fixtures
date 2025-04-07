@@ -4,7 +4,7 @@ namespace Tests\Libraries;
 
 use Dibi\Connection;
 use Dibi\Exception;
-use UlovDomov\TestFixtures\Database\Fixtures\DibiDatabaseFixture;
+use UlovDomov\TestExtras\Database\Fixtures\DibiDatabaseFixture;
 
 final class TestUserDibiFixture extends DibiDatabaseFixture
 {
