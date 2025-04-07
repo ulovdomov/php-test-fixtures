@@ -40,7 +40,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      mariaDb:
+      mariadb:
         image: mariadb:latest
         env:
           MYSQL_ROOT_PASSWORD: root
