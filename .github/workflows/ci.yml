@@ -34,26 +34,24 @@ jobs:
           POSTGRES_USER: ci_user
           POSTGRES_PASSWORD: ci_password
           POSTGRES_DB: ci_db
-        ports:
-          - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U ci_user"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
       mariaDb:
         image: mariadb:latest
         env:
-          MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: ci_db
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ci_db
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="bash -c 'echo > /dev/tcp/127.0.0.1/3306'"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=10
+          --health-retries=5
 
     if: |
       github.event_name != 'pull_request'
