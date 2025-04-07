@@ -1,11 +1,11 @@
 parameters:
     pgDb:
-        host: 'postgres'
+        host: 'localhost'
         user: 'ci_user'
         password: 'ci_password'
         database: 'ci_db'
     mariaDb:
-        host: 'mariadb'
+        host: 'localhost'
         user: 'root'
         password: 'root'
         database: 'ci_db'
