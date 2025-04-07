@@ -93,6 +93,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           tools: "composer:v2"
+          extensions: pdo_mysql, pdo_pgsql
 
       - name: Verify PHP version
         run: php -v
