@@ -68,9 +68,9 @@ jobs:
       - name: Ping service containers
         run: |
           ping -c 1 mariadb || echo "Nepodařilo se pingnout mariadb"
-          ping -c 1 localhost:3306 || echo "Nepodařilo se pingnout mariadb"
+          nc -zv localhost 3306 || echo "Nepodařilo se pingnout mariadb"
           ping -c 1 postgres || echo "Nepodařilo se pingnout postgres"
-          ping -c 1 localhost:5432 || echo "Nepodařilo se pingnout postgres"
+          nc -zv localhost 5432 || echo "Nepodařilo se pingnout postgres"
 
       - name: Install DB client tools
         run: |
