@@ -5,7 +5,7 @@ parameters:
         password: 'ci_password'
         database: 'ci_db'
     mariaDb:
-        host: 'mysql'
+        host: 'mariaDb'
         user: 'root'
         password: 'root'
         database: 'ci_db'
