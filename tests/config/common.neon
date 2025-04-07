@@ -5,7 +5,7 @@ parameters:
         password: 'ci_password'
         database: 'ci_db'
     mariaDb:
-        host: 'localhost'
+        host: '127.0.0.1'
         user: 'root'
         password: 'root'
         database: 'ci_db'
