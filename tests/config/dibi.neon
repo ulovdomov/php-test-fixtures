@@ -4,7 +4,7 @@ tests:
     databaseLayer: 'dibi'
 
 extensions:
-    tests: UlovDomov\TestFixtures\DI\TestExtrasExtension
+    tests: UlovDomov\TestExtras\DI\TestExtrasExtension
 
 services:
     - Tests\Libraries\TestUserDibiFixture

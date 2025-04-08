@@ -6,7 +6,7 @@ use Nette\Bootstrap\Configurator;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Tests\Libraries\TestBootstrap;
 use Tests\Libraries\TestService;
-use UlovDomov\TestFixtures\TestCases\BaseDITestCase;
+use UlovDomov\TestExtras\TestCases\BaseDITestCase;
 
 final class BasicDITest extends BaseDITestCase
 {

@@ -1,0 +1,18 @@
+<?php declare(strict_types = 1);
+
+namespace UlovDomov\TestExtras\Database\Drivers;
+
+interface DatabaseDriver
+{
+    public function dropDatabase(string $databaseName): string;
+
+    public function createDatabase(string $databaseName): string;
+
+    public function useDatabase(string $databaseName): string|null;
+
+    public function getExportCommand(): string;
+
+    public function getImportCommand(): string;
+
+    public function getCacheFile(): string;
+}

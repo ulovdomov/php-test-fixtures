@@ -1,6 +1,6 @@
 {
-  "name": "ulovdomov/test-fixtures",
-  "description": "Php Test fixtures",
+  "name": "ulovdomov/test-extras",
+  "description": "Php Test extras for PhpUnit",
   "type": "library",
   "keywords": [
     "phpunit",
@@ -9,11 +9,11 @@
   ],
   "license": "MIT",
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.1 <8.5",
     "phpunit/phpunit": ">=8.5"
   },
   "require-dev": {
-    "ulovdomov/php-code-style": "^1.0",
+    "ulovdomov/php-code-style": "v25.03.27.1",
     "phpstan/phpstan": "^1.11",
     "phpstan/phpstan-strict-rules": "^1.6",
     "tracy/tracy": "^2.10",
@@ -21,7 +21,7 @@
     "nette/di": ">=2.4.9",
     "dibi/dibi": "^5.0",
     "symfony/console": ">= 3.3.6",
-    "symfony/process": "^7.1",
+    "symfony/process": ">=6.0",
     "nette/bootstrap": "^3.2",
     "nextras/migrations": "^3.3",
     "laminas/laminas-diactoros": "^3.3",
@@ -41,20 +41,32 @@
   },
   "scripts": {
     "install": "composer install --no-interaction --no-progress --prefer-dist",
-    "cs": "mkdir -p temp/.php-codesniffer-cache && vendor/bin/phpcs --standard=phpcs.xml src tests",
-    "cs-fix": "mkdir -p temp/.php-codesniffer-cache && phpcbf --standard=phpcs.xml src tests",
-    "phpstan": "mkdir -p temp/.php-stan-cache && phpstan analyse -c phpstan.neon --memory-limit=1024M",
+    "cs": "mkdir -p temp/.php-codesniffer-cache && vendor/bin/phpcs --standard=tools/phpcs.xml src tests",
+    "cs-fix": "mkdir -p temp/.php-codesniffer-cache && phpcbf --standard=tools/phpcs.xml src tests",
+    "phpstan": "mkdir -p temp/.php-stan-cache && phpstan analyse -c tools/phpstan.neon --memory-limit=1024M",
     "tests": "phpunit tests --configuration tests/phpunit.xml"
   },
   "autoload": {
     "psr-4": {
-      "UlovDomov\\TestFixtures\\": "src/TestFixtures"
+      "UlovDomov\\TestExtras\\": "src/TestExtras"
     }
   },
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/Tests"
     }
+  },
+  "archive": {
+    "exclude": [
+      ".github/",
+      ".infrastructure/",
+      "tests/",
+      "tools/",
+      ".env.template",
+      ".gitignore",
+      "docker-compose.yml",
+      "Makefile"
+    ]
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
