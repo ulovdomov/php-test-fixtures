@@ -15,6 +15,10 @@ final class DatabaseDumpProcessor
 
     public static function dumpDatabase(DatabaseLayer $databaseLayer): void
     {
+        if (!\defined('STDIN')) {
+            \define('STDIN', \fopen('php://stdin', 'r'));
+        }
+
         try {
             $process = self::createProcess($databaseLayer->getDriver()->getExportCommand(), $databaseLayer);
             $process->run();
