@@ -70,6 +70,10 @@ abstract class BaseDatabaseTestCase extends BaseDITestCase
     {
         $load = true;
 
+        if (!\defined('STDIN')) {
+            \define('STDIN', \fopen('php://stdin', 'r'));
+        }
+
         if ($this->isMigrationCacheNeedCreate($container)) {
             self::lock($this->getDatabaseLayer($container)->getCacheFile());
 
