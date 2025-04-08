@@ -12,10 +12,6 @@ use Tests\Libraries\TestBootstrap;
 use Tests\Libraries\TestUser;
 use UlovDomov\TestExtras\TestCases\BaseDatabaseTestCase;
 
-if (!\defined('STDIN')) {
-    \define('STDIN', \fopen('php://stdin', 'r'));
-}
-
 final class BasicDoctrineTest extends BaseDatabaseTestCase
 {
     protected function setUp(): void
