@@ -2,6 +2,7 @@
 
 namespace UlovDomov\TestExtras\TestCases;
 
+use Nette\Neon\Neon;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use PHPUnit\Framework\Assert;
@@ -41,13 +42,36 @@ trait ApiTestTrait
 
     protected function authorizeApi(): void
     {
-        $this->apiToken = MockServerRequest::API_TOKEN;
+        $this->apiToken = $this->loadApiTokenFromConfig() ?? MockServerRequest::API_TOKEN;
     }
 
-    protected function get(string $path, string|null $authToken = null): TestApiResponse
+    private function loadApiTokenFromConfig(): string|null
+    {
+        /** @var string $configPath */
+        $configPath = \dirname(__DIR__, 6) . '/tests/config/test.neon';
+
+        if (!\is_file($configPath)) {
+            return null;
+        }
+
+        /** @var string $configContent */
+        $configContent = \file_get_contents($configPath);
+
+        /** @var array<string, mixed> $config */
+        $config = Neon::decode($configContent);
+
+        /** @phpstan-ignore-next-line */
+        return $config['slim']['auth']['apiToken'] ?? null;
+    }
+
+    /**
+     * @param array<int|string|mixed> $data
+     */
+    protected function get(string $path, array $data = [], string|null $authToken = null): TestApiResponse
     {
         $request = self::createApiRequest(
             path: $path,
+            data: $data,
             authToken: $authToken,
         );
 
