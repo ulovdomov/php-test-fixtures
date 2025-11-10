@@ -60,8 +60,6 @@ trait ApiTestTrait
         /** @var array<string, mixed> $config */
         $config = Neon::decode($configContent);
 
-        /** @var string|null $apiToken */
-
         /** @phpstan-ignore-next-line */
         return $config['slim']['auth']['apiToken'] ?? null;
     }
