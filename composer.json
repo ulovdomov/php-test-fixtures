@@ -1,6 +1,6 @@
 {
-  "name": "ulovdomov/test-fixtures",
-  "description": "Php Test fixtures for PhpUnit",
+  "name": "ulovdomov/test-extras",
+  "description": "Php Test extras for PhpUnit",
   "type": "library",
   "keywords": [
     "phpunit",
